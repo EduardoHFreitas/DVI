@@ -1,0 +1,136 @@
+unit Calculator;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ComCtrls, Vcl.StdCtrls, Vcl.ExtCtrls,
+  Vcl.AppEvnts;
+
+type
+  TfCalc = class(TForm)
+    Btn5: TButton;
+    Btn2: TButton;
+    Btn3: TButton;
+    Btn4: TButton;
+    Btn1: TButton;
+    Btn6: TButton;
+    Btn7: TButton;
+    Btn8: TButton;
+    Btn9: TButton;
+    Btn0: TButton;
+    Label1: TLabel;
+    Label2: TLabel;
+    leV1: TEdit;
+    leV2: TEdit;
+    RgOperacao: TRadioGroup;
+    BtnCalc: TButton;
+    BtnLimpar: TButton;
+    leT1: TEdit;
+    BarraStatus: TStatusBar;
+    ApplicationEvents1: TApplicationEvents;
+
+    procedure MostraHint(Sender: TObject);
+    procedure CreateForm(Sender: TObject);
+    procedure BtnClicks(Sender: TObject);
+    procedure leV1Change(Sender: TObject);
+    procedure BtnCalcClick(Sender: TObject);
+    procedure BtnLimparClick(Sender: TObject);
+
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  fCalc: TfCalc;
+
+implementation
+
+{$R *.dfm}
+
+
+procedure TfCalc.BtnCalcClick(Sender: TObject);
+var
+    valor01, valor02, resultado: double;
+begin
+    try
+       valor01 := StrToFloat(leV1.Text);
+       valor02 := StrToFloat(leV2.Text);
+       resultado := 0;
+       case (RgOperacao.ItemIndex) of
+          0: resultado := valor01 + valor02;
+          1: resultado := valor01 - valor02;
+          2: resultado := valor01 * valor02;
+          3: if (valor02 <> 0) then
+                resultado := valor01 + valor02
+             else
+                MessageDlg('NAO VAI DA NAO', mtError, [mbOK], 0);
+       end;
+
+       leT1.Text := FloatToStr(resultado);
+    except
+        MessageDlg('ALGO ERRADO NAO ESTA CERTO!', mtError, [mbOK], 0);
+    end;
+end;
+
+procedure TfCalc.BtnClicks(Sender: TObject);
+begin
+   if (RgOperacao.ItemIndex = -1) then
+   begin
+      case (Sender as TButton).Tag of
+         1:  leV1.Text := leV1.Text + Btn1.Caption;
+         2:  leV1.Text := leV1.Text + Btn2.Caption;
+         3:  leV1.Text := leV1.Text + Btn3.Caption;
+         4:  leV1.Text := leV1.Text + Btn4.Caption;
+         5:  leV1.Text := leV1.Text + Btn5.Caption;
+         6:  leV1.Text := leV1.Text + Btn6.Caption;
+         7:  leV1.Text := leV1.Text + Btn7.Caption;
+         8:  leV1.Text := leV1.Text + Btn8.Caption;
+         9:  leV1.Text := leV1.Text + Btn9.Caption;
+         10: leV1.Text := leV1.Text + Btn0.Caption;
+      end;
+   end
+   else
+   begin
+      case (Sender as TButton).Tag of
+          1:  leV2.Text := leV2.Text + Btn1.Caption;
+          2:  leV2.Text := leV2.Text + Btn2.Caption;
+          3:  leV2.Text := leV2.Text + Btn3.Caption;
+          4:  leV2.Text := leV2.Text + Btn4.Caption;
+          5:  leV2.Text := leV2.Text + Btn5.Caption;
+          6:  leV2.Text := leV2.Text + Btn6.Caption;
+          7:  leV2.Text := leV2.Text + Btn7.Caption;
+          8:  leV2.Text := leV2.Text + Btn8.Caption;
+          9:  leV2.Text := leV2.Text + Btn9.Caption;
+          10: leV2.Text := leV2.Text + Btn0.Caption;
+      end;
+   end;
+end;
+
+procedure TfCalc.BtnLimparClick(Sender: TObject);
+begin
+    leT1.Text := '';
+    leV1.Text := '';
+    leV2.Text := '';
+    RgOperacao.Enabled := false;
+    RgOperacao.ItemIndex := -1;
+end;
+
+procedure TfCalc.CreateForm(Sender: TObject);
+begin
+   Application.OnHint := MostraHint;
+end;
+
+procedure TfCalc.leV1Change(Sender: TObject);
+begin
+  RgOperacao.Enabled := true;
+end;
+
+procedure TfCalc.MostraHint(Sender: TObject);
+begin
+   BarraStatus.Panels[0].Text := Application.Hint;
+end;
+
+end.
